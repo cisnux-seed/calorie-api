@@ -20,7 +20,10 @@ class FoodCaloriesHandler {
       const calorie = await this.#getFoodCaloryByName(foodName);
 
       const foodCalorieId = await this.#service.addFoodCalorie({
-        userId, foodName, quantity, calorie,
+        userId,
+        foodName,
+        quantity,
+        calorie,
       });
 
       const response = h.response({
@@ -54,12 +57,21 @@ class FoodCaloriesHandler {
   }
 
   async getFoodCaloriesHandler(request) {
-    const { userId, date } = request.query;
+    const { userId, date, keyword } = request.query;
     let foodCalories = null;
-    if (!date) {
-      foodCalories = await this.#service.getFoodCaloriesByUserId(userId);
+    if (userId !== undefined && date !== undefined && keyword !== undefined) {
+      foodCalories = await this.#service.getFoodCaloriesByKeyword({
+        userId,
+        date,
+        keyword,
+      });
+    } else if (userId !== undefined && date !== undefined) {
+      foodCalories = await this.#service.getFoodCaloriesByUserIdAndDate({
+        userId,
+        date,
+      });
     } else {
-      foodCalories = await this.#service.getFoodCaloriesByUserIdAndDate({ userId, date });
+      foodCalories = await this.#service.getFoodCaloriesByUserId(userId);
     }
     return {
       status: 'success',
@@ -138,7 +150,9 @@ class FoodCaloriesHandler {
       },
     });
     if (!res.data.items.length) {
-      const random = (Math.random() * (350.0 - 40.0) + 40.0).toFixed(1);
+      const random = parseFloat(
+        (Math.random() * (350.0 - 40.0) + 40.0).toFixed(1),
+      );
       return random;
     }
     return res.data.items[0].calories;
