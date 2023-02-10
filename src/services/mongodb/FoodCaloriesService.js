@@ -55,7 +55,7 @@ class FoodCaloriesService {
       },
       {
         $sort: {
-          createdAt: -1,
+          createdAt: 1,
         },
       },
     ];
