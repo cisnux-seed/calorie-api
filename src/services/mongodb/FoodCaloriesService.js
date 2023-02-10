@@ -11,13 +11,7 @@ class FoodCaloriesService {
 
   async addFoodCalorie(payload) {
     const id = `food-${nanoid(16)}`;
-    const createdAt = new Intl.DateTimeFormat('id-GB', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    }).format(Date.now());
-    const foodCalorie = { id, ...payload, createdAt };
+    const foodCalorie = { id, ...payload };
 
     const addFoodCalorie = await this.#db
       .collection('foodCalories')
@@ -84,7 +78,8 @@ class FoodCaloriesService {
           _id: 0,
           id: 1,
           foodName: 1,
-          quantity: -1,
+          quantity: 1,
+          createdAt: 1,
           calorie: {
             $multiply: ['$calorie', '$quantity'],
           },
@@ -127,6 +122,7 @@ class FoodCaloriesService {
             $multiply: ['$calorie', '$quantity'],
           },
           quantity: 1,
+          createdAt: 1,
         },
       },
       {

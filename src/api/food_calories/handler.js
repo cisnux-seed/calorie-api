@@ -15,7 +15,9 @@ class FoodCaloriesHandler {
 
   async postFoodCalorieHandler(request, h) {
     try {
-      const { userId, foodName, quantity } = request.payload;
+      const {
+        userId, foodName, quantity, createdAt,
+      } = request.payload;
 
       const calorie = await this.#getFoodCaloryByName(foodName);
 
@@ -24,6 +26,7 @@ class FoodCaloriesHandler {
         foodName,
         quantity,
         calorie,
+        createdAt,
       });
 
       const response = h.response({
