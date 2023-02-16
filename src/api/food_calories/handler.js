@@ -145,20 +145,29 @@ class FoodCaloriesHandler {
   }
 
   // eslint-disable-next-line class-methods-use-this
+  #generateRandomCalories() {
+    const random = parseFloat(
+      (Math.random() * (350.0 - 40.0) + 40.0).toFixed(1),
+    );
+    return random;
+  }
+
+  // eslint-disable-next-line class-methods-use-this
   async #getFoodCaloryByName(foodName) {
-    const res = await axios.get(process.env.FOOD_CALORIES_URI, {
-      params: { query: foodName },
-      headers: {
-        'X-Api-Key': process.env.API_KEY,
-      },
-    });
-    if (!res.data.items.length) {
-      const random = parseFloat(
-        (Math.random() * (350.0 - 40.0) + 40.0).toFixed(1),
-      );
-      return random;
+    try {
+      const res = await axios.get(process.env.FOOD_CALORIES_URI, {
+        params: { query: foodName },
+        headers: {
+          'X-Api-Key': process.env.API_KEY,
+        },
+      });
+      if (!res.data.items.length) {
+        return this.#generateRandomCalories();
+      }
+      return res.data.items[0].calories;
+    } catch (error) {
+      return this.#generateRandomCalories();
     }
-    return res.data.items[0].calories;
   }
 }
 
